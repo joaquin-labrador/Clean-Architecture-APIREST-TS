@@ -1,0 +1,114 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  productId   String   @id @default(uuid())
+  productName String   @unique
+  price       Float
+  stock       Int
+  image       String
+  description String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  productCategoryId String?
+  productCategory   ProductCategory? @relation(fields: [productCategoryId], references: [productCategoryId])
+  salesDetails      SaleDetails[]
+}
+
+model User {
+  userId    String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  username  String   @unique
+  firstName String
+  lastName  String
+  balance   Float    @default(0)
+  address   String
+  verified  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userCategoryId   Int
+  userCategory     UserCategory       @relation(fields: [userCategoryId], references: [userCategoryId])
+  sales            Sale[]
+  verificationCode VerificationCode[]
+  Subscription     Subscription[]
+}
+
+model Sale {
+  //saleId uuid
+  saleId          String   @id @default(uuid())
+  shippingCost    Float
+  allProductsCost Float
+  totalCost       Float
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  saleDetails SaleDetails[]
+  userId      String?
+  user        User?         @relation(fields: [userId], references: [userId])
+}
+
+model SaleDetails {
+  saleDetailsId String   @id @default(uuid())
+  quantity      Int
+  productCost   Float
+  totalCost     Float
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  productId String?
+  product   Product? @relation(fields: [productId], references: [productId])
+  saleId    String?
+  sale      Sale?    @relation(fields: [saleId], references: [saleId])
+}
+
+model UserCategory {
+  userCategoryId   Int      @id @default(autoincrement())
+  userCategoryName String   @unique
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  users User[]
+}
+
+model ProductCategory {
+  productCategoryId   String   @id @default(uuid())
+  productCategoryName String   @unique
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  products Product[]
+}
+
+model VerificationCode {
+  verificationCodeId Int      @id @default(autoincrement())
+  userId             String
+  code               Int      @unique
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [userId])
+}
+
+model Subscription {
+  userId    String   @id
+  userEmail String   @unique
+  paymentId String   @unique
+  status    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  endDate   DateTime
+
+  user User @relation(fields: [userId], references: [userId])
+}
