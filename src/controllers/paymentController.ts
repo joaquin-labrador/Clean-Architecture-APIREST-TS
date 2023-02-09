@@ -43,6 +43,7 @@ export class PaymentController {
     async getNotification(req: Request, res: Response, next: NextFunction) {
         try {
             console.log("Notification received");
+            console.log(req.query);
             res.status(200).json(req.query);
         } catch (error) {
             console.log(error);

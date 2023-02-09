@@ -3,7 +3,6 @@ import { Service } from "typedi";
 
 
 import { IMercadoPagoRepository } from "./interfaces/IMercadopagoRepository";
-import { HttpErrorHandler } from "../../error/HttpErrorHandler";
 import { handleRepositoryError } from "../errorRepositories/errorHandlerRepositories";
 
 const ADMIN_ACCESS_TOKEN = process.env.ADMIN_ACCESS_TOKEN;
@@ -62,7 +61,7 @@ export class MercadoPagoRepository implements IMercadoPagoRepository {
                 auto_recurring: {
                     frequency: 1,
                     frequency_type: "months",
-                    transaction_amount: 100,
+                    transaction_amount: 250,
                     currency_id: "ARS",
                 },
                 payer_email: "test_user_1299614275@testuser.com",
@@ -107,6 +106,7 @@ export class MercadoPagoRepository implements IMercadoPagoRepository {
                     pending: "/pending",
                     success: "/success",
                 },
+                notification_url: process.env.NGROK_URL_NOTIFICATION,
             }
 
             const payment = await axios.post(url, body, {

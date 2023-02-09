@@ -6,12 +6,13 @@ import { HttpErrorHandler } from "../error/HttpErrorHandler";
 import { Subscription } from "../models/subscription";
 import { handleRepositoryError } from "./errorRepositories/errorHandlerRepositories";
 import { SubscriptionSaveDTO } from "../dto/subscriptionSave";
+import { ISubscriptionRepository } from "./interfaces/ISubscriptionRepository";
 
 
 const prisma: Prisma.PrismaClient = new Prisma.PrismaClient();
 
 @Service({ transient: true })
-export class SubscriptionRepository {
+export class SubscriptionRepository implements ISubscriptionRepository {
 
     private subscriptionPrisma = prisma;
 
